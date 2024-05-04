@@ -15,6 +15,7 @@
 #include <windows.h>
 #else
 #include <unistd.h>
+#include <pthread.h>
 #endif
 #include <stdarg.h>
 #include <stdio.h>

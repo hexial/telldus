@@ -80,7 +80,9 @@ bool EventHandler::waitForAny() {
 		timeval now;
 		gettimeofday(&now, NULL);
 		uint64_t abstime_ns_large = now.tv_usec*1000 + 60000000000;  // add 60 seconds wait (5 seconds before)?
-		timespec abstime = { now.tv_sec + (abstime_ns_large / 1000000000), abstime_ns_large % 1000000000 };
+		timespec abstime;
+		abstime.tv_sec = now.tv_sec + (abstime_ns_large / 1000000000);
+		abstime.tv_nsec = abstime_ns_large % 1000000000;
 		ret = pthread_cond_timedwait(&d->event, &d->mutex, &abstime);
 		if (ret == ETIMEDOUT) {
 			continue;
