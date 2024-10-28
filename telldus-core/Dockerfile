@@ -1,4 +1,4 @@
-FROM debian:12.5 as builder
+FROM debian:12.7 as builder
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update \
     && \
@@ -20,7 +20,7 @@ RUN cmake \
     && \
     cmake --build /usr/src/telldus-core/build -- -j$(nproc) 
 
-FROM debian:12.5
+FROM debian:12.7
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update \
     && \
