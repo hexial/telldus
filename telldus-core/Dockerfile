@@ -18,7 +18,9 @@ RUN cmake \
     -DBUILD_TDADMIN=FALSE \
     -DGENERATE_MAN=FALSE \
     && \
-    cmake --build /usr/src/telldus-core/build -- -j$(nproc) 
+    cmake --build /usr/src/telldus-core/build -- -j$(nproc) \
+    && \
+    cmake --build /usr/src/telldus-core/build --target install
 
 FROM debian:12.7
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,6 +31,9 @@ RUN apt update \
     libconfuse2 \
     && \
     apt clean
-COPY --from=builder /usr/src/telldus-core/build/service/telldusd /usr/bin/
-COPY --from=builder /usr/src/telldus-core/build/tdtool/tdtool /usr/bin/
-ENTRYPOINT [ "/usr/bin/telldusd", "--nodaemon" ]
+COPY --from=builder /etc/tellstick.conf /etc/
+COPY --from=builder /usr/local/sbin/telldusd /usr/local/sbin/
+COPY --from=builder /var/state/telldus-core.conf /var/state/
+COPY --from=builder /usr/local/bin/tdtool /usr/local/bin/
+COPY --from=builder /usr/local/lib/libtelldus-core.so.2 /usr/local/lib/
+ENTRYPOINT [ "/usr/local/sbin/telldusd", "--nodaemon" ]
